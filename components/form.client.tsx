@@ -16,6 +16,8 @@ import {
 import { FC } from 'react';
 import mintNft from '../blockchain/mintNft';
 import { ethers } from 'ethers';
+import dynamic from 'next/dynamic';
+const MintingButton = dynamic(import('../components/MintButton'), {ssr: false})
 
 const MintingForm: FC = (props: PaperProps) => {
   const form = useForm({
@@ -71,13 +73,9 @@ const MintingForm: FC = (props: PaperProps) => {
         </Stack>
 
         <Group position="apart" mt="xl">
-          
-          <Button onClick={ async () => {
-            const mintNft = (
-                await import('../blockchain/mintNft')
-                // await import("../../redux/nftsApi")
-              ).default;
-              mintNft(form.values.address, form.values.nftName, form.values.imageUrl)}} type="submit" fullWidth>Mint</Button>
+          <MintingButton address={form.values.address}
+           nftName={form.values.nftName}
+            imageUrl={form.values.imageUrl}></MintingButton>
         </Group>
       </form>
     </Paper>
