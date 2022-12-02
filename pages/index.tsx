@@ -1,6 +1,6 @@
 import Head from 'next/head'
 import Image from 'next/image'
-import MintingForm from '../components/form'
+import MintingForm from '../components/form.client'
 import styles from '../styles/Home.module.css'
 
 export default function Home() {
