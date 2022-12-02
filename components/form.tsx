@@ -32,7 +32,7 @@ const MintingForm: FC = (props: PaperProps) => {
   });
 
   return (
-    <Paper radius="md" p="xl" withBorder {...props}>
+    <Paper style={{width: '100vw'}} radius="md" p="xl" withBorder {...props}>
       <Text size="lg" weight={500}>
         Welcome to Simple Nft Minter on Goerli Testnet.
       </Text>
