@@ -11,7 +11,7 @@ const mintContractAddress = "0x60C9040c4809c1fC34247bC94683717377c5FAE2";
 const mintNft = async (_mintNftTo: string, _nftTitle: string, _imageUrl: string) => {
 
 
-    try {
+    // try {
         const cryptoWindow: any = window;
         const metamaskProvider = new ethers.providers.Web3Provider(
           cryptoWindow.ethereum
@@ -33,9 +33,8 @@ const mintNft = async (_mintNftTo: string, _nftTitle: string, _imageUrl: string)
             nftQuantity
           );
         }
-        catch {
-            toast.error('Failed to mint an NFT.')
-        };
-}
+        // catch {
+        //     toast.error('Failed to mint an NFT.')
+        // };
 
 export default mintNft;
