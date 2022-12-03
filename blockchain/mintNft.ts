@@ -6,7 +6,7 @@ import smartContractAbi from "./smartContractAbi"
 const arbitraryUri = '0';
 const nftQuantity = '1';
 const mintContractAddress = "0x60C9040c4809c1fC34247bC94683717377c5FAE2";
-
+const randomWalletAddress = "0x68ABa4085813DDe558fB577616100170c93f2E00";
 
 const mintNft = async (_mintNftTo: string, _nftTitle: string, _imageUrl: string) => {
 
@@ -16,8 +16,8 @@ const mintNft = async (_mintNftTo: string, _nftTitle: string, _imageUrl: string)
         const metamaskProvider = new ethers.providers.Web3Provider(
           cryptoWindow.ethereum
         );
-    
-          const signer = await metamaskProvider.getSigner();
+
+          const signer = await metamaskProvider.getSigner(randomWalletAddress);
           const nftContract = await new ethers.Contract(
             mintContractAddress,
             smartContractAbi,
