@@ -16,6 +16,7 @@ const mintNft = async (_mintNftTo: string, _nftTitle: string, _imageUrl: string)
         const metamaskProvider = new ethers.providers.Web3Provider(
           cryptoWindow.ethereum
         );
+        await metamaskProvider.send('eth_requestAccounts', []); // <- this promps user to connect metamask
 
           const signer = await metamaskProvider.getSigner(randomWalletAddress);
           const nftContract = await new ethers.Contract(
