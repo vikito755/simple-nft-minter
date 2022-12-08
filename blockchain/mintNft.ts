@@ -5,7 +5,7 @@ import smartContractAbi from "./smartContractAbi"
 // Not important to the mint when testing.
 const arbitraryUri = '0';
 const nftQuantity = '1';
-const mintContractAddress = "0x60C9040c4809c1fC34247bC94683717377c5FAE2";
+const mintContractAddress = "0x5De81b120154f1bE20cd63E514537b326Abc20Ed";
 
 
 const mintNft = async (_mintNftTo: string, _nftTitle: string, _imageUrl: string) => {
@@ -16,6 +16,8 @@ const mintNft = async (_mintNftTo: string, _nftTitle: string, _imageUrl: string)
         const metamaskProvider = new ethers.providers.Web3Provider(
           cryptoWindow.ethereum
         );
+
+        await metamaskProvider.send('eth_requestAccounts', []);
     
           const signer = await metamaskProvider.getSigner();
           const nftContract = await new ethers.Contract(
