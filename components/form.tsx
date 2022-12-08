@@ -16,8 +16,6 @@ import {
 import { FC } from 'react';
 import mintNft from '../blockchain/mintNft';
 import { ethers } from 'ethers';
-import dynamic from 'next/dynamic';
-const MintingButton = dynamic(import('../components/MintButton'), {ssr: false})
 
 const MintingForm: FC = (props: PaperProps) => {
   const form = useForm({
@@ -34,7 +32,7 @@ const MintingForm: FC = (props: PaperProps) => {
   });
 
   return (
-    <Paper style={{width: '100vw'}} radius="md" p="xl" withBorder {...props}>
+    <Paper radius="md" p="xl" withBorder {...props}>
       <Text size="lg" weight={500}>
         Welcome to Simple Nft Minter on Goerli Testnet.
       </Text>
@@ -73,9 +71,13 @@ const MintingForm: FC = (props: PaperProps) => {
         </Stack>
 
         <Group position="apart" mt="xl">
-          <MintingButton address={form.values.address}
-           nftName={form.values.nftName}
-            imageUrl={form.values.imageUrl}></MintingButton>
+          
+          <Button onClick={ async () => {
+            const mintNft = (
+                await import('../blockchain/mintNft')
+                // await import("../../redux/nftsApi")
+              ).default;
+              mintNft(form.values.address, form.values.nftName, form.values.imageUrl)}} type="submit" fullWidth>Mint</Button>
         </Group>
       </form>
     </Paper>
