@@ -5,7 +5,7 @@ import smartContractAbi from "./smartContractAbi"
 // Not important to the mint when testing.
 const arbitraryUri = '0';
 const nftQuantity = '1';
-const mintContractAddress = "0x5De81b120154f1bE20cd63E514537b326Abc20Ed";
+const mintContractAddress = "0xF0F265c5eFDfB14a87151284025ffa88E256bD8F";
 
 
 const mintNft = async (_mintNftTo: string, _nftTitle: string, _imageUrl: string) => {
