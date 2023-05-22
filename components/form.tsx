@@ -22,7 +22,11 @@ const MintingForm: FC = (props: PaperProps) => {
     initialValues: {
       address: '',
       imageUrl: '',
-      nftName: ''
+      nftName: '',
+      traitOne: '',
+      traitTwo: '',
+      traitThree: '',
+      traitFour: ''
     },
 
     validate: {
@@ -68,6 +72,42 @@ const MintingForm: FC = (props: PaperProps) => {
             onChange={(event) => form.setFieldValue('nftName', event.currentTarget.value)}
             error={form.errors.nftName && 'Invalid nft name'}
           />
+{/* Trait type names */}
+          <TextInput
+            required
+            label="Trait Type One"
+            placeholder="Fur"
+            value={form.values.traitOne}
+            onChange={(event) => form.setFieldValue('traitOne', event.currentTarget.value)}
+            error={form.errors.traitOnee && 'Invalid trait type one'}
+          />
+
+<TextInput
+            required
+            label="Trait Type Two"
+            placeholder="Accessories"
+            value={form.values.traitTwo}
+            onChange={(event) => form.setFieldValue('traitTwo', event.currentTarget.value)}
+            error={form.errors.traitTwoe && 'Invalid trait type two'}
+          />
+
+<TextInput
+            required
+            label="Trait Type Three"
+            placeholder="Mouth"
+            value={form.values.traitThree}
+            onChange={(event) => form.setFieldValue('traitThree', event.currentTarget.value)}
+            error={form.errors.traitThree&& 'Invalid trait type three'}
+          />
+
+<TextInput
+            required
+            label="Trait Type Four"
+            placeholder="Eyes"
+            value={form.values.traitFour}
+            onChange={(event) => form.setFieldValue('traitFour', event.currentTarget.value)}
+            error={form.errors.traitFour && 'Invalid trait type four'}
+          />
         </Stack>
 
         <Group position="apart" mt="xl">
@@ -75,9 +115,13 @@ const MintingForm: FC = (props: PaperProps) => {
           <Button onClick={ async () => {
             const mintNft = (
                 await import('../blockchain/mintNft')
-                // await import("../../redux/nftsApi")
               ).default;
-              mintNft(form.values.address, form.values.nftName, form.values.imageUrl)}} type="submit" fullWidth>Mint</Button>
+              mintNft(form.values.address, form.values.nftName, form.values.imageUrl, 
+                form.values.traitOne,
+                form.values.traitTwo,
+                form.values.traitThree,
+                form.values.traitFour
+              )}} type="submit" fullWidth>Mint</Button>
         </Group>
       </form>
     </Paper>

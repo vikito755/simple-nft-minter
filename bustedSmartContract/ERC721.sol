@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: MIT
+// Everyone can mint from this minter. Use ONLY on a TESTNET.
 pragma solidity ^0.8.9;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
@@ -18,6 +19,10 @@ contract Minter is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
         string name;
         string title;
         string imageUri;
+        string traitOne;
+        string traitTwo;
+        string traitThree;
+        string traitFour;
         uint8 quantity;
     }
 
@@ -45,11 +50,16 @@ contract Minter is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
         return string(bstr);
     }
 
-    function safeMint(address to, string memory uri, string memory _name, string memory _title, string memory _imageUri, uint8 _quantity) public  {
+    function safeMint(address to, string memory uri, string memory _name, string memory _title, string memory _imageUri,
+    string memory _traitOne,
+    string memory _traitTwo,
+    string memory _traitThree,
+    string memory _traitFour,
+     uint8 _quantity) public  {
         uint256 tokenId = _tokenIdCounter.current();
         _tokenIdCounter.increment();
         _safeMint(to, tokenId);
-        attributes[tokenId] = Attr(_name, _title, _imageUri, _quantity);
+        attributes[tokenId] = Attr(_name, _title, _imageUri,_traitOne, _traitTwo, _traitThree, _traitFour, _quantity);
         _setTokenURI(tokenId, uri);
     }
 
@@ -75,7 +85,8 @@ contract Minter is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
         string memory json = Base64.encode(
             bytes(string(
                 abi.encodePacked(
-                    '{"name": "', attributes[tokenId].name, '", "title": "', attributes[tokenId].title, '", "image": "', attributes[tokenId].imageUri, '"}'
+                                    '{"name": "', attributes[tokenId].name, '", "title": "', attributes[tokenId].title, '", "image": "', attributes[tokenId].imageUri, '", "attributes": [{"trait_type": "', attributes[tokenId].traitOne, '", "value": "Brown"}, {"trait_type": "', attributes[tokenId].traitTwo, '", "value": "Green"}, {"trait_type": "', attributes[tokenId].traitThree, '", "value": "Open"}, {"trait_type": "', attributes[tokenId].traitFour, '", "value": "Pipe"}]}'
+
 
 
 
@@ -220,5 +231,3 @@ library Base64 {
         return result;
     }
 }
-
-// THIS CONTRACT IS BUSTED, EVERYONE CAN MINT FROM IT, USE ONLY ON A TESTNET AND FOR TESTING.
