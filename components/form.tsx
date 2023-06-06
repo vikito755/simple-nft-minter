@@ -38,10 +38,10 @@ const MintingForm: FC = (props: PaperProps) => {
   return (
     <Paper radius="md" p="xl" withBorder {...props}>
       <Text size="lg" weight={500}>
-        Welcome to Simple Nft Minter on Goerli Testnet.
+        Welcome to Simple Nft Minter on Sepolia Testnet.
       </Text>
 
-      <Divider label="Set your network to Goerli tesnet and unlock your wallet." labelPosition="center" my="lg" />
+      <Divider label="Set your network to Sepolia tesnet and unlock your wallet." labelPosition="center" my="lg" />
 
       <form onSubmit={form.onSubmit(() => {})}>
         <Stack>
