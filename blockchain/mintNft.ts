@@ -5,14 +5,12 @@ import smartContractAbi from "./smartContractAbi"
 // Not important to the mint when testing.
 const arbitraryUri = '0';
 const nftQuantity = '1';
-const mintContractAddress = "0x58f3012edF6082D1edbbD0C5642EcEFdAa5Ab08B";
+const mintContractAddress = "0xD4B4B14901F45C019F6A925d769dDAe67492915f";
 
 
 const mintNft = async (_mintNftTo: string, _nftTitle: string, _imageUrl: string, 
-  _traitOne: string,
-  _traitTwo: string,
-  _traitThree: string,
-  _traitFour: string
+  _traitKeys: string[],
+  _traitValues: string[]
   ) => {
 
 
@@ -31,16 +29,14 @@ const mintNft = async (_mintNftTo: string, _nftTitle: string, _imageUrl: string,
             signer
           );
     
-          await nftContract["safeMint(address,string,string,string,string,string,string,string,string,uint8)"](
+          await nftContract["safeMint(address,string,string,string,string,string[],string[],uint8)"](
             _mintNftTo,
             arbitraryUri,
             _nftTitle,
             _nftTitle,
             _imageUrl,
-            _traitOne,
-            _traitTwo,
-            _traitThree,
-            _traitFour,      
+            _traitKeys,
+            _traitValues,
             nftQuantity
           );
         }

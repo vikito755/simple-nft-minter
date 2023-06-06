@@ -116,11 +116,10 @@ const MintingForm: FC = (props: PaperProps) => {
             const mintNft = (
                 await import('../blockchain/mintNft')
               ).default;
-              mintNft(form.values.address, form.values.nftName, form.values.imageUrl, 
-                form.values.traitOne,
-                form.values.traitTwo,
-                form.values.traitThree,
-                form.values.traitFour
+              mintNft(
+                form.values.address, form.values.nftName, form.values.imageUrl,
+                ["trait one", "trait two", "trait three", "trait four"],
+                [form.values.traitOne, form.values.traitTwo, form.values.traitThree, form.values.traitFour] 
               )}} type="submit" fullWidth>Mint</Button>
         </Group>
       </form>

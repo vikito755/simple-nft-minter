@@ -19,14 +19,25 @@ contract Minter is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
         string name;
         string title;
         string imageUri;
-        string traitOne;
-        string traitTwo;
-        string traitThree;
-        string traitFour;
+        string[] traitsKeys;
+        string[] traitsValues;
         uint8 quantity;
     }
 
     constructor() ERC721("MyToken", "MTK") {}
+
+function join(string[] memory elements, string memory delimiter) internal pure returns (string memory) {
+    if (elements.length == 0) {
+        return "";
+    }
+
+    string memory joinedString = elements[0];
+    for (uint256 i = 1; i < elements.length; i++) {
+        joinedString = string(abi.encodePacked(joinedString, delimiter, elements[i]));
+    }
+
+    return joinedString;
+}
 
     function uint2str(uint _i) internal pure returns (string memory _uintAsString) {
         if (_i == 0) {
@@ -51,15 +62,14 @@ contract Minter is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
     }
 
     function safeMint(address to, string memory uri, string memory _name, string memory _title, string memory _imageUri,
-    string memory _traitOne,
-    string memory _traitTwo,
-    string memory _traitThree,
-    string memory _traitFour,
-     uint8 _quantity) public  {
+        string[] memory _traitsKeys,
+        string[] memory _traitsValues,
+        uint8 _quantity
+     ) public  {
         uint256 tokenId = _tokenIdCounter.current();
         _tokenIdCounter.increment();
         _safeMint(to, tokenId);
-        attributes[tokenId] = Attr(_name, _title, _imageUri,_traitOne, _traitTwo, _traitThree, _traitFour, _quantity);
+        attributes[tokenId] = Attr(_name, _title, _imageUri, _traitsKeys, _traitsValues, _quantity);
         _setTokenURI(tokenId, uri);
     }
 
@@ -76,32 +86,33 @@ contract Minter is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
         super._burn(tokenId);
     }
 
-    function tokenURI(uint256 tokenId)
-    public
-    view
-    override(ERC721, ERC721URIStorage)
-    returns (string memory)
-    {
-        string memory json = Base64.encode(
-            bytes(string(
-                abi.encodePacked(
-                                    '{"name": "', attributes[tokenId].name, '", "title": "', attributes[tokenId].title, '", "image": "', attributes[tokenId].imageUri, '", "attributes": [{"trait_type": "', attributes[tokenId].traitOne, '", "value": "Brown"}, {"trait_type": "', attributes[tokenId].traitTwo, '", "value": "Green"}, {"trait_type": "', attributes[tokenId].traitThree, '", "value": "Open"}, {"trait_type": "', attributes[tokenId].traitFour, '", "value": "Pipe"}]}'
+    function tokenURI(uint256 tokenId) public view override(ERC721, ERC721URIStorage) returns (string memory) {
+    string[] memory traits = new string[](attributes[tokenId].traitsKeys.length);
 
-
-
-
-
-                )
-            ))
-        );
-        return string(abi.encodePacked('data:application/json;base64,', json));
-        //return super.tokenURI(tokenId);
+    for (uint256 i = 0; i < attributes[tokenId].traitsKeys.length; i++) {
+        traits[i] = string(abi.encodePacked(
+            '{"trait_type": "', attributes[tokenId].traitsKeys[i], '", "value": "', attributes[tokenId].traitsValues[i], '"}'
+        ));
     }
+
+    string memory json = Base64.encode(bytes(string(
+        abi.encodePacked(
+            '{"name": "', attributes[tokenId].name, '", "title": "', attributes[tokenId].title, '", "image": "', attributes[tokenId].imageUri, '", "attributes": [',
+            string(abi.encodePacked(join(traits, ","))),
+            ']}'
+        )
+    )));
+
+    return string(abi.encodePacked('data:application/json;base64,', json));
+}
+
+
+
 
     function supportsInterface(bytes4 interfaceId)
     public
     view
-    override(ERC721, ERC721Enumerable)
+    override(ERC721, ERC721URIStorage, ERC721Enumerable)
     returns (bool)
     {
         return super.supportsInterface(interfaceId);
