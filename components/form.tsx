@@ -10,10 +10,9 @@ import {
   Stack,
 } from '@mantine/core';
 import { FC } from 'react';
-// import mintNft from '../blockchain/mintNft';
+import mintNft from '../blockchain/mintNft';
 import { ethers } from 'ethers';
 import { useForm } from '@mantine/form';
-import mintNft from '../blockchain/mintNft';
 
 interface Trait {
   name: string;
@@ -57,9 +56,10 @@ const MintingForm: FC = (props: PaperProps) => {
   };
 
   const handleSubmit = async () => {
-    const traitNames = traits.map((traitName, index) => `Trait ${index + 1}`);
+    const mintNft = (await import('../blockchain/mintNft')).default;
+    const traitNames = traits.map((trait) => trait.name);
     const traitValues = traits.map((trait) => trait.value);
-    await mintNft(
+    mintNft(
       form.values.address,
       form.values.nftName,
       form.values.imageUrl,
