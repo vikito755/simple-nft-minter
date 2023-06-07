@@ -1,39 +1,72 @@
-import { useToggle, upperFirst } from '@mantine/hooks';
-import { useForm } from '@mantine/form';
+import { useState } from 'react';
 import {
   TextInput,
-  PasswordInput,
   Text,
   Paper,
   Group,
   PaperProps,
   Button,
   Divider,
-  Checkbox,
-  Anchor,
   Stack,
 } from '@mantine/core';
 import { FC } from 'react';
-import mintNft from '../blockchain/mintNft';
+// import mintNft from '../blockchain/mintNft';
 import { ethers } from 'ethers';
+import { useForm } from '@mantine/form';
+import mintNft from '../blockchain/mintNft';
+
+interface Trait {
+  name: string;
+  value: string;
+}
 
 const MintingForm: FC = (props: PaperProps) => {
+  const [traits, setTraits] = useState<Trait[]>([]);
   const form = useForm({
     initialValues: {
       address: '',
       imageUrl: '',
       nftName: '',
-      traitOne: '',
-      traitTwo: '',
-      traitThree: '',
-      traitFour: ''
+      traits: {},
     },
-
     validate: {
-    //   address: (val) => (ethers.utils.isAddress(val) ? null : 'Invalid email'),
-    //   password: (val) => (val.length <= 6 ? 'Password should include at least 6 characters' : null),
+      address: (val) => (ethers.utils.isAddress(val) ? null : 'Invalid address'),
+      imageUrl: (val) => (val.startsWith('http') ? null : 'Invalid image URL'),
+      nftName: (val) => (val.length > 0 ? null : 'NFT name is required'),
     },
   });
+
+  const addTraitField = () => {
+    setTraits((prevTraits) => [...prevTraits, { name: '', value: '' }]);
+  };
+
+  const removeTraitField = (index: number) => {
+    setTraits((prevTraits) => {
+      const newTraits = [...prevTraits];
+      newTraits.splice(index, 1);
+      return newTraits;
+    });
+  };
+
+  const handleTraitChange = (index: number, field: keyof Trait, value: string) => {
+    setTraits((prevTraits) => {
+      const newTraits = [...prevTraits];
+      newTraits[index][field] = value;
+      return newTraits;
+    });
+  };
+
+  const handleSubmit = async () => {
+    const traitNames = traits.map((traitName, index) => `Trait ${index + 1}`);
+    const traitValues = traits.map((trait) => trait.value);
+    await mintNft(
+      form.values.address,
+      form.values.nftName,
+      form.values.imageUrl,
+      traitNames,
+      traitValues
+    );
+  };
 
   return (
     <Paper radius="md" p="xl" withBorder {...props}>
@@ -41,27 +74,30 @@ const MintingForm: FC = (props: PaperProps) => {
         Welcome to Simple Nft Minter on Sepolia Testnet.
       </Text>
 
-      <Divider label="Set your network to Sepolia tesnet and unlock your wallet." labelPosition="center" my="lg" />
+      <Divider
+        label="Set your network to Sepolia tesnet and unlock your wallet."
+        labelPosition="center"
+        my="lg"
+      />
 
-      <form onSubmit={form.onSubmit(() => {})}>
+      <form onSubmit={form.onSubmit(handleSubmit)}>
         <Stack>
-
           <TextInput
             required
-            label="address"
+            label="Address"
             placeholder="0x123..."
             value={form.values.address}
             onChange={(event) => form.setFieldValue('address', event.currentTarget.value)}
             error={form.errors.address && 'Invalid address'}
           />
 
-            <TextInput
+          <TextInput
             required
-            label="image URL"
+            label="Image URL"
             placeholder="https://url-to-your-image"
             value={form.values.imageUrl}
             onChange={(event) => form.setFieldValue('imageUrl', event.currentTarget.value)}
-            error={form.errors.imageUrl && 'Invalid imageUrl'}
+            error={form.errors.imageUrl && 'Invalid image URL'}
           />
 
           <TextInput
@@ -70,61 +106,55 @@ const MintingForm: FC = (props: PaperProps) => {
             placeholder="Determined Squirrel Buddies"
             value={form.values.nftName}
             onChange={(event) => form.setFieldValue('nftName', event.currentTarget.value)}
-            error={form.errors.nftName && 'Invalid nft name'}
-          />
-{/* Trait type names */}
-          <TextInput
-            required
-            label="Trait Type One"
-            placeholder="Fur"
-            value={form.values.traitOne}
-            onChange={(event) => form.setFieldValue('traitOne', event.currentTarget.value)}
-            error={form.errors.traitOnee && 'Invalid trait type one'}
+            error={form.errors.nftName && 'Invalid NFT name'}
           />
 
-<TextInput
-            required
-            label="Trait Type Two"
-            placeholder="Accessories"
-            value={form.values.traitTwo}
-            onChange={(event) => form.setFieldValue('traitTwo', event.currentTarget.value)}
-            error={form.errors.traitTwoe && 'Invalid trait type two'}
-          />
+          {traits.map((trait, index) => (
+            <div key={index}>
+              <TextInput
+                required
+                label={`Trait Type ${index + 1}`}
+                placeholder="Enter trait type"
+                value={trait.name}
+                onChange={(event) =>
+                  handleTraitChange(index, 'name', event.currentTarget.value)
+                }
+                error={form.errors[`trait_${index}`] && `Invalid trait type ${index + 1}`}
+              />
 
-<TextInput
-            required
-            label="Trait Type Three"
-            placeholder="Mouth"
-            value={form.values.traitThree}
-            onChange={(event) => form.setFieldValue('traitThree', event.currentTarget.value)}
-            error={form.errors.traitThree&& 'Invalid trait type three'}
-          />
+              <TextInput
+                required
+                label={`Trait Value ${index + 1}`}
+                placeholder="Enter trait value"
+                value={trait.value}
+                onChange={(event) =>
+                  handleTraitChange(index, 'value', event.currentTarget.value)
+                }
+                error={form.errors[`trait_${index}`] && `Invalid trait value ${index + 1}`}
+              />
 
-<TextInput
-            required
-            label="Trait Type Four"
-            placeholder="Eyes"
-            value={form.values.traitFour}
-            onChange={(event) => form.setFieldValue('traitFour', event.currentTarget.value)}
-            error={form.errors.traitFour && 'Invalid trait type four'}
-          />
+              <Button
+                variant="outline"
+                color="red"
+                onClick={() => removeTraitField(index)}
+              >
+                Remove Trait
+              </Button>
+            </div>
+          ))}
         </Stack>
 
         <Group position="apart" mt="xl">
-          
-          <Button onClick={ async () => {
-            const mintNft = (
-                await import('../blockchain/mintNft')
-              ).default;
-              mintNft(
-                form.values.address, form.values.nftName, form.values.imageUrl,
-                ["trait one", "trait two", "trait three", "trait four"],
-                [form.values.traitOne, form.values.traitTwo, form.values.traitThree, form.values.traitFour] 
-              )}} type="submit" fullWidth>Mint</Button>
+          <Button onClick={addTraitField} type="button">
+            Add Trait Field
+          </Button>
+          <Button onClick={handleSubmit} type="submit" fullWidth>
+            Mint
+          </Button>
         </Group>
       </form>
     </Paper>
   );
-}
+};
 
 export default MintingForm;
